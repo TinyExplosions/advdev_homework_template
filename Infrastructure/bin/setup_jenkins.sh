@@ -28,18 +28,13 @@ echo "Setting up Jenkins in project ${GUID}-jenkins from Git Repo ${REPO} for Cl
 
 # # To be Implemented by Student
 oc project ${GUID}-jenkins
-oc new-app jenkins-persistent --param ENABLE_OAUTH=true --param MEMORY_LIMIT=2Gi --param VOLUME_CAPACITY=4Gi
+oc new-app jenkins-persistent --param ENABLE_OAUTH=true --param MEMORY_LIMIT=2Gi --param CPU_LIMIT=2 --param VOLUME_CAPACITY=4Gi
 
 docker build ../resources -t docker-registry-default.apps.${CLUSTER}/${GUID}-jenkins/jenkins-slave-maven-appdev:v3.9
 
-docker login -u notneeded -p $(oc whoami -t) docker-registry-default.apps.${CLUSTER}
+docker login -u $(oc whoami) -p $(oc whoami -t) docker-registry-default.apps.${CLUSTER}
 
 docker push docker-registry-default.apps.${CLUSTER}/${GUID}-jenkins/jenkins-slave-maven-appdev:v3.9
 
 
 oc new-app -f ../templates/jenkins-configmap.yaml --param GUID=${GUID}
-
-
-
-
-
